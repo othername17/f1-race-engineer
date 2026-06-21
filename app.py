@@ -6,7 +6,8 @@ st.title("F1 Telemetry Analyzer")
 
 uploaded_file = st.file_uploader("Upload telemetry CSV", type="csv")
 if uploaded_file:
-    df = pd.read_csv(uploaded_file)
+    # Changed sep='\t' to read tab-separated files
+    df = pd.read_csv(uploaded_file, sep='\t')
     processed_df = process_telemetry(df)
     st.write("Processed Data", processed_df)
     st.line_chart(processed_df[['throttle', 'brake']])
