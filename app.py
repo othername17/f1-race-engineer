@@ -7,8 +7,7 @@ file = st.file_uploader("Upload CSV", type="csv")
 
 if file:
     df = pd.read_csv(file)
-    laps = sorted(df['lapNum'].unique())
-    ref = st.selectbox("Reference Lap", laps)
+processed_df = process_telemetry(df, ref, target)    ref = st.selectbox("Reference Lap", laps)
     target = st.selectbox("Your Lap", laps)
     
     if st.button("Get Setup Advice"):
