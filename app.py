@@ -6,20 +6,17 @@ st.title("F1 Setup Advisor")
 file = st.file_uploader("Upload CSV", type="csv")
 
 if file:
-    df = pd.read_csv(file)
+    # Use sep='\t' to split the combined string into proper columns
+    df = pd.read_csv(file, sep='\t')
     
-    # Show us the columns so we can fix the mapping if 'lapNum' is wrong
-    st.write("Column names found:", df.columns.tolist())
+    # Check for the actual lap column name
+    lap_col = [col for col in df.columns if 'lap' in col.lower()][0]
     
-    # Try to find the lap column. If 'lapNum' doesn't exist, this will show an error
-    # we can fix immediately.
-    try:
-        laps = sorted(df['lapNum'].unique())
-        ref = st.selectbox("Reference Lap", laps)
-        target = st.selectbox("Your Lap", laps)
-        
-        if st.button("Get Setup Advice"):
-            advice = process_telemetry(df, ref, target)
-            st.write(f"### Engineer's Advice: {advice}")
-    except KeyError:
-        st.error("Error: Could not find 'lapNum' column. Look at the list above and tell me which one is the lap identifier.")
+    laps = sorted(df[lap_col].unique())
+    ref = st.selectbox("Reference Lap", laps)
+    target = st.selectbox("Your Lap", laps)
+    
+    if st.button("Get Setup Advice"):
+        # Pass the identified lap column to the engine
+        advice = process_telemetry(df, ref, target, lap_col)
+        st.write(f"### Engineer's Advice: {advice}")
